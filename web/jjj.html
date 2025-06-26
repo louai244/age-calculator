@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>حاسبة العمر وفرق العمر</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      direction: rtl;
+      background: linear-gradient(to bottom right, #e3f2fd, #ffffff);
+      color: #333;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1, h2 {
+      color: #1976d2;
+      margin-top: 40px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 30px;
+      background-color: #ffffffcc;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      margin-top: 40px;
+      margin-bottom: 40px;
+    }
+
+    input[type="date"] {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      margin: 8px;
+      width: 70%;
+      max-width: 300px;
+    }
+
+    button {
+      padding: 10px 25px;
+      font-size: 16px;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #1565c0;
+    }
+
+    .result-box {
+      background-color: #f1f8e9;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      font-size: 18px;
+      color: #2e7d32;
+      border: 1px solid #c5e1a5;
+    }
+
+    hr {
+      border: none;
+      height: 1px;
+      background-color: #ddd;
+      margin: 40px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>حاسبة العمر</h1>
+
+  <div class="container">
+    <p>أدخل تاريخ ميلادك:</p>
+    <input type="date" id="birthDate">
+    <br>
+    <button onclick="calculateAge()">احسب العمر</button>
+
+    <div id="ageResult" class="result-box" style="display: none;"></div>
+    <div id="birthdayCountdown" class="result-box" style="display: none;"></div>
+  </div>
+
+  <hr>
+
+  <div class="container">
+    <h2>فرق العمر بين شخصين</h2>
+    <p>تاريخ ميلاد الشخص الأول:</p>
+    <input type="date" id="birth1">
+    <p>تاريخ ميلاد الشخص الثاني:</p>
+    <input type="date" id="birth2">
+    <br>
+    <button onclick="calculateAgeDifference()">احسب فرق العمر</button>
+    <div id="diffResult" class="result-box" style="display: none;"></div>
+  </div>
+
+  <script>
+    function calculateAge() {
+      const birthDate = new Date(document.getElementById("birthDate").value);
+      const today = new Date();
+
+      const ageResult = document.getElementById("ageResult");
+      const birthdayCountdown = document.getElementById("birthdayCountdown");
+
+      if (!birthDate || birthDate > today) {
+        ageResult.innerHTML = "رجاءً أدخل تاريخ ميلاد صالح.";
+        ageResult.style.display = "block";
+        birthdayCountdown.style.display = "none";
+        return;
+      }
+
+      let years = today.getFullYear() - birthDate.getFullYear();
+      let months = today.getMonth() - birthDate.getMonth();
+      let days = today.getDate() - birthDate.getDate();
+
+      if (days < 0) {
+        months--;
+        days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+      }
+
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      ageResult.innerHTML = `عمرك هو ${years} سنة و ${months} شهر و ${days} يوم.`;
+      ageResult.style.display = "block";
+
+      let nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+      if (nextBirthday < today) {
+        nextBirthday.setFullYear(today.getFullYear() + 1);
+      }
+
+      const diff = nextBirthday - today;
+      const daysLeft = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+      birthdayCountdown.innerHTML = `تبقّى ${daysLeft} يومًا على عيد ميلادك القادم 🎉`;
+      birthdayCountdown.style.display = "block";
+    }
+
+    function calculateAgeDifference() {
+      const birth1 = new Date(document.getElementById("birth1").value);
+      const birth2 = new Date(document.getElementById("birth2").value);
+      const diffResult = document.getElementById("diffResult");
+
+      if (!birth1 || !birth2) {
+        diffResult.innerHTML = "رجاءً أدخل تاريخي ميلاد صحيحين.";
+        diffResult.style.display = "block";
+        return;
+      }
+
+      const diffMs = Math.abs(birth1 - birth2);
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      const years = Math.floor(diffDays / 365.25);
+      const months = Math.floor((diffDays % 365.25) / 30.44);
+      const days = Math.floor((diffDays % 365.25) % 30.44);
+
+      diffResult.innerHTML = `فرق العمر هو ${years} سنة و ${months} شهر و ${days} يوم.`;
+      diffResult.style.display = "block";
+    }
+  </script>
+
+</body>
+</html>
